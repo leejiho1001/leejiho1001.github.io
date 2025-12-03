@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>방명록   </title>
+    <style>
+        .grid {
+        display: grid;
+        grid-template-columns: 1fr 2fr 1fr; /* 1 / 2 / 1 비율 */
+        width: 100%;
+        }
+
+        .center {
+        background: white;     /* 본문 영역 */
+        padding: 20px;         /* 보기 좋게 여백 */
+        }
+
+        .left, .right {
+        background: #f7f7f7;   /* 양쪽 배경 */
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 200px;
+            border-right: 1px solid #ccc;
+            padding: 20px 10px;
+            box-sizing: border-box;
+            background: #f7f7f7;
+        }
+        .side-logo {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .side-info {
+            font-size: 13px;
+            line-height: 1.4;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .menu-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+        .menu {
+            list-style: none;
+            padding-left: 0;
+            font-size: 14px;
+        }
+        .menu li {
+            padding: 6px 4px;
+            border-radius: 4px;
+        }
+        .menu li a {
+            text-decoration: none;
+            color: #000;
+            display: block;
+        }
+        .menu li a:hover {
+            background: #e0e0e0;
+        }
+
+        .main {
+            flex: 1;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .wrapper {
+            max-width: 900px;
+            margin: 0;
+            border: 1px solid #000;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 5px 0 15px;
+        }
+
+        /* 갤러리 */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3열 */
+            gap: 15px;
+        }
+        .gallery img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            transition: 0.2s;
+        }
+        .gallery img:hover {
+            transform: scale(1.03);
+        }
+        #memoContainer {
+    width: 70%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column; /* 세로 배치 */
+    gap: 20px;
+}
+
+    /* 입력 칸 + 버튼 */
+    .memo-input-area {
+    display: flex;
+    flex-direction: column;  /* 세로로 배치 */
+    gap: 10px;
+    }
+
+    #memoInput {
+    width: 100%;
+    height: 180px;
+    resize: none;
+    padding: 10px;
+    box-sizing: border-box;
+    }
+
+    #memoBtn {
+    width: 80px;
+    padding: 8px;
+    }
+
+    /* 메모 리스트 */
+    #memoList {
+    display: flex;
+    flex-direction: column-reverse;  /* 최신 메모가 맨 위로 오게 */
+    gap: 10px;
+    }
+
+    .memo-item {
+    padding: 10px;
+    border: 1px solid #ccc;
+    background: #fafafa;
+    }
+
+    .memo-date {
+    font-size: 0.8rem;
+    color: gray;
+    }
+
+    </style>
+    <script>
+    // 저장된 글 불러오기
+    function saveMemo() {
+    let text = document.getElementById("memoInput").value.trim();
+    if (text === "") return;
+
+    let memos = JSON.parse(localStorage.getItem("memos")) || [];
+
+    // 최신 메모를 맨 위에 넣기
+    memos.unshift({
+        content: text,
+        date: new Date().toLocaleString()
+    });
+
+    localStorage.setItem("memos", JSON.stringify(memos));
+
+    document.getElementById("memoInput").value = "";
+    loadMemos();
+}
+
+    function loadMemos() {
+    let memos = JSON.parse(localStorage.getItem("memos")) || [];
+    let memoList = document.getElementById("memoList");
+
+    memoList.innerHTML = "";
+
+    memos.forEach(m => {
+        memoList.innerHTML += `
+            <div class="memo-item">
+                <div>${m.content}</div>
+                <div class="memo-date">${m.date}</div>
+            </div>
+        `;
+    });
+}
+
+// 페이지 들어올 때 팝업 + 메모 로드
+window.onload = function() {
+    alert("방명록 페이지입니다! 인사 한 마디 남겨보세요 \n(이 적으신 내용은 기록되지 않습니다)");
+    loadMemos();
+}
+</script>
+
+
+</script>
+
+</head>
+<body>
+<div class="grid">
+
+    <!-- 왼쪽 1단 (빈 공간) -->
+    <div class="left"></div>
+
+    <!-- 가운데 2단 (전체 콘텐츠) -->
+    <div class="center">
+        <div class="layout">
+
+    <!-- 사이드바 (index랑 똑같이 유지) -->
+    <aside class="sidebar">
+        <img src="cnulogo.png" alt="CNU 로고" class="side-logo">
+        <img src="physics.jpg" alt="물리학과 로고" class="side-logo">
+
+        <div class="side-info">
+            <p><b>충남대학교 물리학과</b></p>
+            <p>202000934 이지호</p>
+        </div>
+
+        <div class="menu-title">메뉴</div>
+        <ul class="menu">
+            <li><a href="mywebpage.html">홈</a></li>
+            <li><a href="daily.html">일상 기록</a></li>
+            <li><a href="exercise.html">운동 기록</a></li>
+            <li><a href="study.html">전공 공부</a></li>
+            <li><a href="hobbymovie.html">취미 / 영화</a></li>
+            <li><a href="etc.html">방명록</a></li>
+        </ul>
+    </aside>
+
+    <!-- 메인 컨텐츠 -->
+    <div id="memoContainer">
+
+    <h2>방명록</h2>
+
+    <div class="memo-input-area">
+        <textarea id="memoInput" placeholder="메모를 작성하세요"></textarea>
+        <button id="memoBtn" onclick="saveMemo()">등록</button>
+    </div>
+
+    <div id="memoList"></div>
+</div>
+
+
+
+</div>
+    </div>
+
+    <!-- 오른쪽 1단 (빈 공간) -->
+    <div class="right"></div>
+
+</div>
+
+
+</body>
+</html>
