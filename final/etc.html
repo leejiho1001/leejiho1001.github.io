@@ -152,8 +152,7 @@
     </style>
 <script>
 function getMemos() {
-    // 안전하게 파싱: 저장된 값이 없거나 깨져 있어도 에러 안 나게
-    const raw = localStorage.getItem("memos");
+    var raw = localStorage.getItem("memos");
     if (!raw) return [];
     try {
         return JSON.parse(raw);
@@ -163,13 +162,33 @@ function getMemos() {
     }
 }
 
+function loadMemos() {
+    var memos = getMemos();
+    var memoList = document.getElementById("memoList");
+
+    memoList.innerHTML = "";
+
+    for (var i = 0; i < memos.length; i++) {
+        var m = memos[i];
+
+        // 메모 박스 하나씩 추가
+        memoList.innerHTML +=
+            '<div class="memo-item">' +
+                '<div>' + m.content + '</div>' +
+                '<div class="memo-date">' + m.date + '</div>' +
+            '</div>';
+    }
+}
+
 function saveMemo() {
-    const input = document.getElementById("memoInput");
-    let text = input.value.trim();
+    var input = document.getElementById("memoInput");
+    var text = input.value.replace(/^\s+|\s+$/g, "");  // trim
+
     if (text === "") return;
 
-    let memos = getMemos();
+    var memos = getMemos();
 
+    // 앞에 추가
     memos.unshift({
         content: text,
         date: new Date().toLocaleString()
@@ -181,23 +200,7 @@ function saveMemo() {
     loadMemos();
 }
 
-function loadMemos() {
-    let memos = getMemos();
-    let memoList = document.getElementById("memoList");
-
-    memoList.innerHTML = "";
-
-    memos.forEach(m => {
-        memoList.innerHTML += `
-            <div class="memo-item">
-                <div>${m.content}</div>
-                <div class="memo-date">${m.date}</div>
-            </div>
-        `;
-    });
-}
-
-// 페이지 들어올 때 팝업 + 메모 로드
+// 페이지 로드 시: 알림 + 메모 로드
 window.addEventListener("load", function () {
     alert("방명록 페이지입니다! 인사 한 마디 남겨주세요!");
     loadMemos();
@@ -263,6 +266,7 @@ window.addEventListener("load", function () {
 
 </body>
 </html>
+
 
 
 
