@@ -150,15 +150,26 @@
     }
 
     </style>
-    <script>
-    // 저장된 글 불러오기
-    function saveMemo() {
-    let text = document.getElementById("memoInput").value.trim();
+<script>
+function getMemos() {
+    // 안전하게 파싱: 저장된 값이 없거나 깨져 있어도 에러 안 나게
+    const raw = localStorage.getItem("memos");
+    if (!raw) return [];
+    try {
+        return JSON.parse(raw);
+    } catch (e) {
+        console.error("memos 파싱 에러, 초기화합니다.", e);
+        return [];
+    }
+}
+
+function saveMemo() {
+    const input = document.getElementById("memoInput");
+    let text = input.value.trim();
     if (text === "") return;
 
-    let memos = JSON.parse(localStorage.getItem("memos")) || [];
+    let memos = getMemos();
 
-    // 최신 메모를 맨 위에 넣기
     memos.unshift({
         content: text,
         date: new Date().toLocaleString()
@@ -166,12 +177,12 @@
 
     localStorage.setItem("memos", JSON.stringify(memos));
 
-    document.getElementById("memoInput").value = "";
+    input.value = "";
     loadMemos();
 }
 
-    function loadMemos() {
-    let memos = JSON.parse(localStorage.getItem("memos")) || [];
+function loadMemos() {
+    let memos = getMemos();
     let memoList = document.getElementById("memoList");
 
     memoList.innerHTML = "";
@@ -187,11 +198,12 @@
 }
 
 // 페이지 들어올 때 팝업 + 메모 로드
-window.onload = function() {
-    alert("방명록 페이지입니다! 인사 한 마디 남겨주세요!);
+window.addEventListener("load", function () {
+    alert("방명록 페이지입니다! 인사 한 마디 남겨주세요!");
     loadMemos();
-}
+});
 </script>
+
 
 </head>
 <body>
@@ -251,5 +263,6 @@ window.onload = function() {
 
 </body>
 </html>
+
 
 
